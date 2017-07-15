@@ -229,8 +229,8 @@ var SampleApp = function() {
                     res.send([]);
                     return;
                 }
-                if(docs.length == 0){
-                    res.send(docs);
+                if(docs.length == 0 || !docs.pref){
+                    res.send([]);
                     return;
                 }
                 var objectIds = docs.pref.tutee.map(function(x) {
@@ -252,8 +252,8 @@ var SampleApp = function() {
                     res.send([]);
                     return;
                 }
-                if(docs.length == 0){
-                    res.send(docs);
+                if(docs.length == 0 || !docs.pref){
+                    res.send([]);
                     return;
                 }
                 var objectIds = docs.pref.tutor.map(function(x) {
