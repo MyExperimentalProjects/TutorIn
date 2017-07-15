@@ -161,7 +161,7 @@ var SampleApp = function() {
                 if(err){
                     res.send(err);
                 }else{
-                    if(docs.length == 0){
+                    if(!docs || docs.length == 0){
                         db.user.save(params, function(err, docs) {
                             res.send(docs);
                         });
@@ -426,7 +426,7 @@ var SampleApp = function() {
           next();
         });
 
-        self.app.use(cors());
+        //self.app.use(cors());
 
         //  Add handlers for the app (from the routes).
         self.app.use(bodyParser.json()); // support json encoded bodies
