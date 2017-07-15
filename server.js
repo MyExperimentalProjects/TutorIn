@@ -202,7 +202,7 @@ var SampleApp = function() {
             res.setHeader('Content-Type', 'application/json');
             var session = db.collection('session');
 
-            db.session.findOne({"_id":ObjectId(req.param('id')), function(err, docs) {
+            db.session.findOne({"_id":ObjectId(req.param('id'))}, function(err, docs) {
                 if(err){
                     res.send(err);
                 }else{
