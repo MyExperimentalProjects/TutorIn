@@ -149,7 +149,7 @@ var SampleApp = function() {
             
         };
 
-        self.postroutes['/post/tutor'] = function(req, res) {
+        self.postroutes['/post/user'] = function(req, res) {
             res.setHeader('Content-Type', 'application/json');
             var user = db.collection('user');
             var params = req.body;
