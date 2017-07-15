@@ -229,6 +229,10 @@ var SampleApp = function() {
                     res.send([]);
                     return;
                 }
+                if(docs.length == 0){
+                    res.send(docs);
+                    return;
+                }
                 var objectIds = docs.pref.tutee.map(function(x) {
                    return ObjectId(x);
                 });
