@@ -186,6 +186,32 @@ var SampleApp = function() {
             
         };
 
+        self.postroutes['/post/tutor/:id/pref'] = function(req, res) {
+            res.setHeader('Content-Type', 'application/json');
+            var user = db.collection('user');
+            var params = req.body;
+            db.user.update({"_id":ObjectId(req.param('id'))}, { $set: {"pref.tutor" :params.pref}}, {upsert: false}, function(err, docs) {
+                if(err){
+                    res.send(err);
+                    return;
+                }
+                res.send(docs);
+            });
+        };
+
+        self.postroutes['/post/tutee/:id/pref'] = function(req, res) {
+            res.setHeader('Content-Type', 'application/json');
+            var user = db.collection('user');
+            var params = req.body;
+            db.user.update({"_id":ObjectId(req.param('id'))}, { $set: {"pref.tutee":params.pref}}, {upsert: false}, function(err, docs) {
+                if(err){
+                    res.send(err);
+                    return;
+                }
+                res.send(docs);
+            });          
+        };
+
         self.routes['/get/user/:id'] = function(req, res) {
             res.setHeader('Content-Type', 'application/json');
             var user = db.collection('user');
@@ -194,12 +220,22 @@ var SampleApp = function() {
             });          
         };
 
-        self.routes['/get/tutee/:id'] = function(req, res) {
+        self.routes['/get/tutee/:id/pref'] = function(req, res) {
             res.setHeader('Content-Type', 'application/json');
             var user = db.collection('user');
             var filter = {"isTutor": false};
             db.user.findOne({"_id":ObjectId(req.param('id'))}, {"pref.tutee":true}, function(err, docs) {
-                res.send(docs);
+                if(err){
+                    res.send(err);
+                    return;
+                }
+                var objectIds = docs.pref.tutee.map(function(x) {
+                   return ObjectId(x);
+                });
+                //console.log(objectIds);
+                db.category.find({ "_id": { $in: objectIds } }, function(err, prefs){
+                    res.send(prefs);
+                });
             });          
         };
 
@@ -208,8 +244,22 @@ var SampleApp = function() {
             var user = db.collection('user');
             var filter = {"isTutor": true};
             db.user.findOne({"_id":ObjectId(req.param('id'))}, {"pref.tutor":true}, function(err, docs) {
-                res.send(docs);
-            });          
+                if(err){
+                    res.send(err);
+                    return;
+                }
+                if(docs.length == 0){
+                    res.send(docs);
+                    return;
+                }
+                var objectIds = docs.pref.tutor.map(function(x) {
+                   return ObjectId(x);
+                });
+                //console.log(objectIds);
+                db.category.find({ "_id": { $in: objectIds } }, function(err, prefs){
+                    res.send(prefs);
+                });
+            });             
         };
 
         self.routes['/get/tutee/:id'] = function(req, res) {
