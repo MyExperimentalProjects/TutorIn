@@ -181,8 +181,8 @@ var SampleApp = function() {
             res.setHeader('Content-Type', 'application/json');
             var user = db.collection('user');
             var params = req.body;
-
-            db.user.save({"_id":ObjectId(req.param('id'))}, params, function(err, docs) {
+            //console.log(params);
+            db.user.save(params, function(err, docs) {
                 if(err){
                     res.send(err);
                     return;
