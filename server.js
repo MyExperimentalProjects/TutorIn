@@ -111,17 +111,17 @@ var SampleApp = function() {
             res.setHeader('Content-Type', 'application/json');
             var user = db.collection('user');
             var filter = {"isTutor": true};
-            if(req.params.state){
-                filter["state"] = req.params.state;
+            if(req.param('state')){
+                filter["location.state"] = req.param('state');
             }
-            if(req.params.country){
-                filter["country"] = req.params.country;
+            if(req.param('country')){
+                filter["location.country"] = req.param('country');
             }
-            if(req.params.city){
-                filter["city"] = req.params.city;
+            if(req.param('city')){
+                filter["location.city"] = req.param('city');
             }
-            if(req.params.area){
-                filter["area"] = req.params.area;
+            if(req.param('area')){
+                filter["location.area"] = req.param('area');
             }
             db.user.find(filter, function(err, docs) {
                 res.send(docs);
@@ -134,18 +134,20 @@ var SampleApp = function() {
             res.setHeader('Content-Type', 'application/json');
             var user = db.collection('user');
             var filter = {"isTutor": false};
-            if(req.params.state){
-                filter["state"] = req.params.state;
+            console.log(req.param('state'));
+            if(req.param('state')){
+                filter["location.state"] = req.param('state');
             }
-            if(req.params.country){
-                filter["country"] = req.params.country;
+            if(req.param('country')){
+                filter["location.country"] = req.param('country');
             }
-            if(req.params.city){
-                filter["city"] = req.params.city;
+            if(req.param('city')){
+                filter["location.city"] = req.param('city');
             }
-            if(req.params.area){
-                filter["area"] = req.params.area;
+            if(req.param('area')){
+                filter["location.area"] = req.param('area');
             }
+            console.log(filter);
             db.user.find(filter, function(err, docs) {
                 res.send(docs);
             }); 
