@@ -125,6 +125,8 @@ var SampleApp = function() {
             if(req.param('area')){
                 filter["location.area"] = req.param('area');
             }
+
+        
             db.user.find(filter, function(err, docs) {
                 res.send(docs);
             }); 
@@ -252,6 +254,19 @@ var SampleApp = function() {
             });
         };
 
+        self.postroutes['/post/tutor/:id/availability'] = function(req, res) {
+            res.setHeader('Content-Type', 'application/json');
+            var user = db.collection('user');
+            var params = req.body;
+            db.user.update({"_id":ObjectId(req.param('id'))}, { $set: {"availability.tutor" :params}}, {upsert: false}, function(err, docs) {
+                if(err){
+                    res.send(err);
+                    return;
+                }
+                res.send(docs);
+            });
+        };
+
         self.postroutes['/post/tutee/:id/pref'] = function(req, res) {
             res.setHeader('Content-Type', 'application/json');
             var user = db.collection('user');
@@ -276,6 +291,19 @@ var SampleApp = function() {
                 }
                 res.send(docs);
             });          
+        };
+
+        self.postroutes['/post/tutee/:id/availability'] = function(req, res) {
+            res.setHeader('Content-Type', 'application/json');
+            var user = db.collection('user');
+            var params = req.body;
+            db.user.update({"_id":ObjectId(req.param('id'))}, { $set: {"availability.tutee" :params}}, {upsert: false}, function(err, docs) {
+                if(err){
+                    res.send(err);
+                    return;
+                }
+                res.send(docs);
+            });
         };
 
         self.routes['/get/user/:id'] = function(req, res) {
@@ -392,7 +420,7 @@ var SampleApp = function() {
         
         self.app.use(function(req, res, next) {
           res.header("Access-Control-Allow-Origin", "*");
-          res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+          //res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
           next();
         });
 
