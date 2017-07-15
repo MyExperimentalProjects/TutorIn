@@ -182,7 +182,7 @@ var SampleApp = function() {
             var user = db.collection('user');
             var params = req.body;
 
-            db.user.update({"_id":ObjectId(req.param('id'))}, params, function(err, docs) {
+            db.user.save({"_id":ObjectId(req.param('id'))}, params, function(err, docs) {
                 if(err){
                     res.send(err);
                     return;
