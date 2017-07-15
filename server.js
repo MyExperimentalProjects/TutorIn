@@ -192,6 +192,14 @@ var SampleApp = function() {
             
         };
 
+        self.routes['/get/user/:id'] = function(req, res) {
+            res.setHeader('Content-Type', 'application/json');
+            var user = db.collection('user');
+            db.user.findOne({"_id":ObjectId(req.param('id'))}, function(err, docs) {
+                res.send(docs);
+            });          
+        };
+
         self.routes['/get/tutee/:id'] = function(req, res) {
             res.setHeader('Content-Type', 'application/json');
             var user = db.collection('user');
