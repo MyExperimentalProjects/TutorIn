@@ -239,11 +239,37 @@ var SampleApp = function() {
             });
         };
 
+        self.postroutes['/post/tutor/:id/rating'] = function(req, res) {
+            res.setHeader('Content-Type', 'application/json');
+            var user = db.collection('user');
+            var params = req.body;
+            db.user.update({"_id":ObjectId(req.param('id'))}, { $set: {"rating.tutor" :params.rating}}, {upsert: false}, function(err, docs) {
+                if(err){
+                    res.send(err);
+                    return;
+                }
+                res.send(docs);
+            });
+        };
+
         self.postroutes['/post/tutee/:id/pref'] = function(req, res) {
             res.setHeader('Content-Type', 'application/json');
             var user = db.collection('user');
             var params = req.body;
             db.user.update({"_id":ObjectId(req.param('id'))}, { $set: {"pref.tutee":params}}, {upsert: false}, function(err, docs) {
+                if(err){
+                    res.send(err);
+                    return;
+                }
+                res.send(docs);
+            });          
+        };
+
+        self.postroutes['/post/tutee/:id/rating'] = function(req, res) {
+            res.setHeader('Content-Type', 'application/json');
+            var user = db.collection('user');
+            var params = req.body;
+            db.user.update({"_id":ObjectId(req.param('id'))}, { $set: {"rating.tutee":params.rating}}, {upsert: false}, function(err, docs) {
                 if(err){
                     res.send(err);
                     return;
