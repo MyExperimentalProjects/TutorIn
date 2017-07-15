@@ -185,6 +185,19 @@ var SampleApp = function() {
             });        
         };
 
+        self.routes['/get/session/:id'] = function(req, res) {
+            res.setHeader('Content-Type', 'application/json');
+            var session = db.collection('session');
+
+            db.session.findOne({"_id":ObjectId(req.param('id')), function(err, docs) {
+                if(err){
+                    res.send(err);
+                }else{
+                    res.send(docs);
+                }
+            });        
+        };
+
         self.postroutes['/post/user/:id'] = function(req, res) {
             res.setHeader('Content-Type', 'application/json');
             var user = db.collection('user');
