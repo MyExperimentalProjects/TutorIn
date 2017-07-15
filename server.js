@@ -129,6 +129,15 @@ var SampleApp = function() {
             
         };
 
+        self.routes['/get/categories'] = function(req, res) {
+            res.setHeader('Content-Type', 'application/json');
+            var category = db.collection('category');
+            db.category.find({}, function(err, docs) {
+                res.send(docs);
+            }); 
+            
+        };
+
         self.routes['/get/tutor/:id'] = function(req, res) {
             res.setHeader('Content-Type', 'application/json');
             var user = db.collection('user');
