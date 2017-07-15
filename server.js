@@ -110,16 +110,43 @@ var SampleApp = function() {
         self.routes['/get/tutors'] = function(req, res) {
             res.setHeader('Content-Type', 'application/json');
             var user = db.collection('user');
-            db.user.find({ "isTutor": true}, function(err, docs) {
+            var filter = {"isTutor": true};
+            if(req.params.state){
+                filter["state"] = req.params.state;
+            }
+            if(req.params.country){
+                filter["country"] = req.params.country;
+            }
+            if(req.params.city){
+                filter["city"] = req.params.city;
+            }
+            if(req.params.area){
+                filter["area"] = req.params.area;
+            }
+            db.user.find(filter, function(err, docs) {
                 res.send(docs);
             }); 
             
         };
 
+
         self.routes['/get/tutees'] = function(req, res) {
             res.setHeader('Content-Type', 'application/json');
             var user = db.collection('user');
-            db.user.find({ "isTutor": false}, function(err, docs) {
+            var filter = {"isTutor": false};
+            if(req.params.state){
+                filter["state"] = req.params.state;
+            }
+            if(req.params.country){
+                filter["country"] = req.params.country;
+            }
+            if(req.params.city){
+                filter["city"] = req.params.city;
+            }
+            if(req.params.area){
+                filter["area"] = req.params.area;
+            }
+            db.user.find(filter, function(err, docs) {
                 res.send(docs);
             }); 
             
