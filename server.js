@@ -1,8 +1,10 @@
 #!/bin/env node
 //  OpenShift sample Node application
 var express = require('express');
+var mongojs = require('mongojs');
 var fs      = require('fs');
-
+var db = require("./db.js"); 
+var ObjectId = mongojs.ObjectId;
 
 /**
  *  Define the sample application.
@@ -103,6 +105,15 @@ var SampleApp = function() {
         self.routes['/'] = function(req, res) {
             res.setHeader('Content-Type', 'text/html');
             res.send(self.cache_get('index.html') );
+        };
+
+        self.routes['/get/tutors'] = function(req, res) {
+            res.setHeader('Content-Type', 'application/json');
+            var user = db.collection('user');
+            db.user.find({}, function(err, docs) {
+                res.send(docs);
+            }); 
+            
         };
     };
 
