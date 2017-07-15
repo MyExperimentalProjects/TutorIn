@@ -127,6 +127,13 @@ var SampleApp = function() {
                 filter["location.area"] = req.param('area');
             }
 
+            if(req.param('pref')){
+                filter["pref.tutor"] = { $in: [req.param('pref')] }
+            }
+
+            if(req.param('day')){
+                filter["availability.tutor"] = { $elemMatch: { "day": req.param('day')} }
+            }
         
             db.user.find(filter, function(err, docs) {
                 res.send(docs);
@@ -403,6 +410,14 @@ var SampleApp = function() {
             if(req.param('area')){
                 filter["location.area"] = req.param('area');
             }
+            if(req.param('pref')){
+                filter["pref.tutee"] = { $in: [ObjectId(req.param('pref'))] }
+            }
+
+            if(req.param('day')){
+                filter["availability.tutee"] = { $elemMatch: { "day": req.param('day')} }
+            }
+    
             db.user.find(filter, function(err, docs) {
                 res.send(docs);
             }); 
