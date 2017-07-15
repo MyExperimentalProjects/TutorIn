@@ -110,7 +110,16 @@ var SampleApp = function() {
         self.routes['/get/tutors'] = function(req, res) {
             res.setHeader('Content-Type', 'application/json');
             var user = db.collection('user');
-            db.user.find({}, function(err, docs) {
+            db.user.find({ "isTutor": true}, function(err, docs) {
+                res.send(docs);
+            }); 
+            
+        };
+
+        self.routes['/get/tutees'] = function(req, res) {
+            res.setHeader('Content-Type', 'application/json');
+            var user = db.collection('user');
+            db.user.find({ "isTutor": false}, function(err, docs) {
                 res.send(docs);
             }); 
             
