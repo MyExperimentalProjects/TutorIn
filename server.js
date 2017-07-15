@@ -4,6 +4,7 @@ var express = require('express');
 var mongojs = require('mongojs');
 var fs      = require('fs');
 var db = require("./db.js"); 
+var bodyParser = require('body-parser');
 var ObjectId = mongojs.ObjectId;
 
 /**
@@ -96,6 +97,7 @@ var SampleApp = function() {
      */
     self.createRoutes = function() {
         self.routes = { };
+        self.postroutes = { };
 
         self.routes['/asciimo'] = function(req, res) {
             var link = "http://i.imgur.com/kmbjB.png";
@@ -147,21 +149,54 @@ var SampleApp = function() {
             
         };
 
+        self.postroutes['/post/tutor'] = function(req, res) {
+            res.setHeader('Content-Type', 'application/json');
+            var user = db.collection('user');
+            var params = req.body;
+
+            db.user.update({"uid":params.uid}, params, {upsert: true}, function(err, docs) {
+                if(err){
+                    res.send(err);
+                    return;
+                }
+                if(docs.upserted){
+                    db.user.findOne({"_id":docs.upserted[0]["_id"]}, function(err, docs) {
+                        res.send(docs);
+                    });
+                }else{
+                    db.user.findOne({"uid":params.uid}, function(err, docs) {
+                        res.send(docs);
+                    });
+                }
+            });
+            
+        };
+
         self.routes['/get/tutee/:id'] = function(req, res) {
             res.setHeader('Content-Type', 'application/json');
             var user = db.collection('user');
-            db.user.findOne({"_id":ObjectId(req.param('id'))}, function(err, docs) {
+            var filter = {"isTutor": false};
+            db.user.findOne({"_id":ObjectId(req.param('id'))}, {"pref.tutee":true}, function(err, docs) {
                 res.send(docs);
             });          
         };
 
-        /*self.routes['/get/tutee/:id'] = function(req, res) {
+        self.routes['/get/tutor/:id/pref'] = function(req, res) {
+            res.setHeader('Content-Type', 'application/json');
+            var user = db.collection('user');
+            var filter = {"isTutor": true};
+            db.user.findOne({"_id":ObjectId(req.param('id'))}, {"pref.tutor":true}, function(err, docs) {
+                res.send(docs);
+            });          
+        };
+
+        self.routes['/get/tutee/:id'] = function(req, res) {
             res.setHeader('Content-Type', 'application/json');
             var user = db.collection('user');
             db.user.find({"_id":ObjectId(req.param('id'))}, function(err, docs) {
                 res.send(docs);
             });          
-        };*/
+        };
 
 
         self.routes['/get/tutees'] = function(req, res) {
@@ -181,7 +216,6 @@ var SampleApp = function() {
             if(req.param('area')){
                 filter["location.area"] = req.param('area');
             }
-            console.log(filter);
             db.user.find(filter, function(err, docs) {
                 res.send(docs);
             }); 
@@ -196,11 +230,22 @@ var SampleApp = function() {
      */
     self.initializeServer = function() {
         self.createRoutes();
-        self.app = express.createServer();
+        self.app = express();
+        
+        self.app.use(function(req, res, next) {
+          res.header("Access-Control-Allow-Origin", "*");
+          res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+          next();
+        });
 
         //  Add handlers for the app (from the routes).
+        self.app.use(bodyParser.json()); // support json encoded bodies
+        self.app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
         for (var r in self.routes) {
             self.app.get(r, self.routes[r]);
+        }
+        for (var r in self.postroutes) {
+            self.app.post(r, self.postroutes[r]);
         }
     };
 
