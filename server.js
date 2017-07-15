@@ -171,6 +171,20 @@ var SampleApp = function() {
             
         };
 
+        self.postroutes['/post/session'] = function(req, res) {
+            res.setHeader('Content-Type', 'application/json');
+            var user = db.collection('session');
+            var params = req.body;
+
+            db.user.save(params, function(err, docs) {
+                if(err){
+                    res.send(err);
+                }else{
+                    res.send(docs);
+                }
+            });        
+        };
+
         self.postroutes['/post/user/:id'] = function(req, res) {
             res.setHeader('Content-Type', 'application/json');
             var user = db.collection('user');
