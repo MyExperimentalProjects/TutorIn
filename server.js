@@ -165,9 +165,29 @@ var SampleApp = function() {
                     });
                 }else{
                     db.user.findOne({"uid":params.uid}, function(err, docs) {
-                        res.send(docs);
+                        if(err){
+                            res.send(err);
+                        }else{
+                            docs["exists"] = true;
+                            res.send(docs);
+                        }
                     });
                 }
+            });
+            
+        };
+
+        self.postroutes['/post/user/:id'] = function(req, res) {
+            res.setHeader('Content-Type', 'application/json');
+            var user = db.collection('user');
+            var params = req.body;
+
+            db.user.update({"_id":ObjectId(req.param('id'))}, params, function(err, docs) {
+                if(err){
+                    res.send(err);
+                    return;
+                }
+                res.send(docs);
             });
             
         };
