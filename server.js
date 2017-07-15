@@ -226,7 +226,7 @@ var SampleApp = function() {
             var filter = {"isTutor": false};
             db.user.findOne({"_id":ObjectId(req.param('id'))}, {"pref.tutee":true}, function(err, docs) {
                 if(err){
-                    res.send(err);
+                    res.send([]);
                     return;
                 }
                 var objectIds = docs.pref.tutee.map(function(x) {
@@ -245,7 +245,7 @@ var SampleApp = function() {
             var filter = {"isTutor": true};
             db.user.findOne({"_id":ObjectId(req.param('id'))}, {"pref.tutor":true}, function(err, docs) {
                 if(err){
-                    res.send(err);
+                    res.send([]);
                     return;
                 }
                 if(docs.length == 0){
