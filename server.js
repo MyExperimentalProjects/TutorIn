@@ -154,24 +154,18 @@ var SampleApp = function() {
             var user = db.collection('user');
             var params = req.body;
 
-            db.user.update({"uid":params.uid}, params, {upsert: true}, function(err, docs) {
+            db.user.findOne({"uid":params.uid}, function(err, docs) {
                 if(err){
                     res.send(err);
-                    return;
-                }
-                if(docs.upserted){
-                    db.user.findOne({"_id":docs.upserted[0]["_id"]}, function(err, docs) {
-                        res.send(docs);
-                    });
                 }else{
-                    db.user.findOne({"uid":params.uid}, function(err, docs) {
-                        if(err){
-                            res.send(err);
-                        }else{
-                            docs["exists"] = true;
+                    if(docs.length == 0){
+                        db.user.save(params, function(err, docs) {
                             res.send(docs);
-                        }
-                    });
+                        });
+                    }else{
+                        docs["exists"] = true;
+                        res.send(docs);   
+                    }
                 }
             });
             
